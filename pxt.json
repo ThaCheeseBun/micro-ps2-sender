@@ -10,7 +10,8 @@
         "main.ts",
         "README.md",
         "constants.ts",
-        "ps2.ts"
+        "ps2.ts",
+        "old.ts"
     ],
     "testFiles": [
         "test.ts"
