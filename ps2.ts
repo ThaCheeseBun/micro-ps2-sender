@@ -135,10 +135,9 @@ function readPS2() {
         rawData[i] = transmitByte(TxRx1[i]);
 
     // get rest if in full data mode
-    if (rawData[1] == 0x79) {
+    if (rawData[1] == 0x79)
         for (let i = 0; i < 12; i++)
             rawData[i + 9] = transmitByte(TxRx2[i]);
-    }
 
     // done, release attention
     pins.digitalWritePin(ATT_PIN, 1);
