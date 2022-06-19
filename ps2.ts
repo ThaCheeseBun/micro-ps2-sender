@@ -42,11 +42,11 @@ function initializeController() {
     // try and read until read delay is right
     while (true) {
         // enter config mode
-        transmitCmdString(enterConfigMode, enterConfigMode.length);
+        transmitCmdString(enterConfigMode);
         // enable analog mode
-        transmitCmdString(set_mode_analog_lock, set_mode_analog_lock.length);
+        transmitCmdString(set_mode_analog_lock);
         // exit config mode
-        transmitCmdString(exitConfigMode, exitConfigMode.length);
+        transmitCmdString(exitConfigMode);
 
         // attempt to read again
         readPS2();
@@ -96,12 +96,12 @@ function transmitByte(byte: number) {
 }
 
 // transmit array of bytes
-function transmitCmdString(str: number[], len: number) {
+function transmitCmdString(str: number[]) {
     // ready, draw attention
     pins.digitalWritePin(ATT_PIN, 0);
 
     // send data, one byte at a time
-    for (let y = 0; y < len; y++)
+    for (let y = 0; y < str.length; y++)
         transmitByte(str[y]);
 
     // done, release attention
@@ -160,11 +160,11 @@ function reInitializeController(mode: number) {
 
     for (let initAttempts = 1; initAttempts < MAX_INIT_ATTEMPT; initAttempts++)
     {
-        transmitCmdString(enterConfigMode, enterConfigMode.length);
-        transmitCmdString(set_mode_analog_lock, set_mode_analog_lock.length);
+        transmitCmdString(enterConfigMode);
+        transmitCmdString(set_mode_analog_lock);
         if (controllerMode == ALLPRESSUREMODE)
-            transmitCmdString(config_AllPressure, config_AllPressure.length);
-        transmitCmdString(exitConfigMode, exitConfigMode.length);
+            transmitCmdString(config_AllPressure);
+        transmitCmdString(exitConfigMode);
         readPS2();
         if (rawData[1] == controllerMode)
             return 1;

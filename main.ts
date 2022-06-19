@@ -14,27 +14,34 @@ let lastData;
 
 // init controller
 if (!initializeController()) {
-    //serial.writeLine("nah it brokie");
     basic.showIcon(IconNames.Sad);
 } else {
-    //serial.writeLine("init success :)");
-    basic.showIcon(IconNames.Happy);
+    if (!reInitializeController(ALLPRESSUREMODE)) {
+        basic.showIcon(IconNames.Sad);
+    } else {
+        control.inBackground(function () {
+            basic.showIcon(IconNames.Happy);
+            basic.pause(3000);
+            basic.clearScreen();
+        });
 
-    // read inputs in a loop
-    while (true) {
-        readPS2();
+        // read inputs in a loop
+        while (true) {
+            readPS2();
 
-        const arr = [
-            ~rawData[3] & btnChangedState[0],
-            ~rawData[4] & btnChangedState[1],
-            rawData[3] & btnChangedState[0],
-            rawData[4] & btnChangedState[1],
-        ];
-        if (lastData != JSON.stringify(arr)) {
-            serial.writeString(arr.join(',') + '.');
-            lastData = JSON.stringify(arr);
+            /*const arr = [
+                ~rawData[3] & btnChangedState[0],
+                ~rawData[4] & btnChangedState[1],
+                rawData[3] & btnChangedState[0],
+                rawData[4] & btnChangedState[1],
+            ];
+            if (lastData != JSON.stringify(arr)) {
+                serial.writeString(arr.join(',') + '.');
+                lastData = JSON.stringify(arr);
+            }*/
+            serial.writeString(rawData.join(',') + '.');
+
+            basic.pause(READDELAYMS);
         }
-
-        basic.pause(READDELAYMS);
     }
 }

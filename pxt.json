@@ -17,7 +17,7 @@
         "test.ts"
     ],
     "targetVersions": {
-        "target": "4.1.51",
+        "target": "5.0.6",
         "targetId": "microbit"
     },
     "supportedTargets": [
