@@ -1,8 +1,6 @@
 // variables
 let readDelay = 1;
-let rawData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-let btnLastState = [0, 0];
-let btnChangedState = [0, 0];
+let rawData = pins.createBuffer(21);
 let controllerMode = 0;
 
 // Bit operation helpers
@@ -52,7 +50,7 @@ function initializeController() {
         readPS2();
 
         // if successful, break
-        if (rawData[1] == MODE)
+        if (rawData.getNumber(NumberFormat.UInt8LE, 1) == MODE)
             break;
         // if we tried 10 times and failed, just quit
         if (readDelay == MAX_READ_DELAY) {
@@ -132,23 +130,16 @@ function readPS2() {
 
     // send first 9 bytes
     for (let i = 0; i < 9; i++)
-        rawData[i] = transmitByte(TxRx1[i]);
+        rawData.setNumber(NumberFormat.UInt8LE, i, transmitByte(TxRx1[i]));
 
     // get rest if in full data mode
-    if (rawData[1] == 0x79)
+    if (rawData.getNumber(NumberFormat.UInt8LE, 1) == 0x79)
         for (let i = 0; i < 12; i++)
-            rawData[i + 9] = transmitByte(TxRx2[i]);
+            rawData.setNumber(NumberFormat.UInt8LE, i + 9, transmitByte(TxRx2[i]));
 
     // done, release attention
     pins.digitalWritePin(ATT_PIN, 1);
     //last_read = millis()
-
-    // detect button changes
-    btnChangedState[0] = rawData[3] ^ btnLastState[0];
-    btnChangedState[1] = rawData[4] ^ btnLastState[1];
-    // save the changes
-    btnLastState[0] = rawData[3];
-    btnLastState[1] = rawData[4];
 }
 
 // reinit controller for other mode
@@ -165,7 +156,7 @@ function reInitializeController(mode: number) {
             transmitCmdString(config_AllPressure);
         transmitCmdString(exitConfigMode);
         readPS2();
-        if (rawData[1] == controllerMode)
+        if (rawData.getNumber(NumberFormat.UInt8LE, 1) == controllerMode)
             return 1;
         basic.pause(readDelay);
     }

@@ -1,5 +1,6 @@
 // setup serial
 serial.setBaudRate(115200);
+serial.setTxBufferSize(21);
 
 // settings
 const READDELAYMS = 10;
@@ -10,7 +11,7 @@ const ATT_PIN = DigitalPin.P16;
 const MODE = ANALOGMODE;
 
 // vars
-let lastData;
+let lastData = pins.createBuffer(21);
 
 // init controller
 if (!initializeController()) {
@@ -22,10 +23,13 @@ if (!initializeController()) {
         // read inputs in a loop
         while (true) {
             readPS2();
-            if (lastData !== rawData.join(',')) {
-                serial.writeString(rawData.join(',') + '.');
-                lastData = rawData.join(',');
+            if (lastData !== rawData) {
+                serial.writeBuffer(rawData);
+                lastData.write(0, rawData);
             }
+            
+
+            
             basic.pause(READDELAYMS);
         }
     }
