@@ -9,15 +9,13 @@
     "files": [
         "main.ts",
         "README.md",
-        "constants.ts",
-        "ps2.ts",
         "old.ts"
     ],
     "testFiles": [
         "test.ts"
     ],
     "targetVersions": {
-        "target": "5.0.6",
+        "target": "5.0.12",
         "targetId": "microbit"
     },
     "supportedTargets": [
